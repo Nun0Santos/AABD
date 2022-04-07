@@ -1,0 +1,12 @@
+PL/SQL -> Programação baseada em blocos
+
+Declare -> Declarar variáveis
+	x number;
+Begin
+Select count(x) into x; (tenho de meter o into x quando faço o select)
+
+End
+
+Não há interação com o utilizador
+
+ 

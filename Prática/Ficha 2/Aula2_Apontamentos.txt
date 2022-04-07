@@ -1,0 +1,1 @@
+Sempre que quisermos consultar alguma coisa da tabela temos de fazer select's
