@@ -1,0 +1,87 @@
+Teste PLSQL
+
+1)
+
+Create function DURACAO_ULTIMO_INTERNAEMNTO(utNIF number, intEspecialidade varchar2, ano number) return number IS
+	
+	data Utente.dataIntern%Type;
+	codE1 Utente.codUtente%Type;
+	tempo Utente.Termino.duracao%Type;
+
+Begin
+
+   Begin //excecao 3
+   	Select codUtente into codE3
+   	From Utente
+   	where Utente.nif = utNIF;
+   
+   Exception
+   	Where NO_DATA_FOUND then
+   	   RAISE_APPLICATION_ERROR(-20203,'Utenete com o nif' + utNIF + ' inexistente'.);
+   End
+   
+   Begin //excecao1
+   	Select dataIntern into data
+   	From utente u , Termino t, Internamento i
+   	Where  i.codUtente = u.codUtente and i.codIntern = t.codInter and u.nif = utNIF and to_char(i.dataIntern,'YYYY') = ano and i.especialidade = intEspecialidade;
+   	order by 1 DESC;
+   
+  Exception
+   	Where NO_DATA_FOUND then
+     		RAISE_APPLICATION_ERROR(-20201,'Utenete com o nif' + utNIF + ' nao esteve internado na especialidade de ' + intEspecialidade + ' nesse ano'.);
+
+   End
+   
+   Begin //excecao2
+   
+   	Select Termino.data, duracao into tempo
+   	From utente u , Termino t, Internamento i
+   	Where  i.codUtente = u.codUtente and i.codIntern = t.codInter and u.nif = utNIF and to_char(t.data,'YYYY') = ano and i.especialidade = intEspecialidade;
+   	Order by 1 DESC;
+   
+   Exception
+   	Where NO_DATA_FOUND then
+   	   RAISE_APPLICATION_ERROR(-20202,'O ultimo internamento do Utente com o nif' + utNIF + ' nesse ano, na especialidade de ' + intEspecialidade + ' ainda nao terminou'.);
+
+   End
+	
+	return duracao;	
+
+End
+/
+
+
+
+2) Procedimento
+
+Create Procedure INTERNAMENTOS_CIDADE(vcidade	Varchar2, vano Number) IS
+
+	EX Exception;
+
+	Cursor C1 in
+	   Select nome,nif
+	   From Utente, Internamento
+	   Where Internamento.codUtente = Utente.codUtente;
+	   
+	Cursor C2 in
+	   Select especialidade
+	   From Medico
+	   Where upper(morada) like '%' || upper(vcidade) || '%'; 
+
+Begin	
+	Delete From TEMP;
+	Begin
+	 	for r in c1
+	 	Loop
+		  for b in c2
+		  Loop
+		  	if()
+		  	Insert into TEMP(vano,r.c1, ,DURACAO_ULTIMO_INTERNAEMNTO(nif,r.c2.vano));
+		  
+		  End Loop  
+		End Loop
+	Exception
+			
+	End
+End
+/
